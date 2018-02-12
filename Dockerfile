@@ -10,9 +10,11 @@ RUN \
       bash \
       ca-certificates \
       curl \
+      git \
+      jq \
+      make \
       nodejs \
       nmap \
-      jq \
       parallel \
       ssh \
       wget \
@@ -45,7 +47,8 @@ RUN \
 ENV PATH="/root/google-cloud-sdk/bin:${PATH}"
 
 COPY package.json /code/
-COPY node_modules /code/node_modules/
+RUN npm install
+#COPY node_modules /code/node_modules/
 
 # TODO(ajm) netassert doesn't run in the container yet
 COPY entrypoint.sh yj netassert /usr/local/bin/

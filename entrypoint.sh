@@ -23,6 +23,14 @@ if [[ "${DEBUG:-}" != "" ]]; then
   cat /code/test/test.yaml
 fi
 
+if [[ "${HOME}" == '/' ]]; then
+  export HOME='/tmp/home/'
+  mkdir -p "${HOME}" || true
+  echo "\$HOME empty. Using temporary home directory"
+fi
+
+echo "Home: '${HOME}'"
+
 [[ -d ${HOME}/.parallel ]] || mkdir -p ${HOME}/.parallel || true
 [[ -f ${HOME}/.parallel/will-cite ]] || touch ~/.parallel/will-cite
 

@@ -1,19 +1,25 @@
-GIT_CREDENTIALS = "ssh-key-jenkins-bot"
+pipeline {
+//  agent none // also forces each stage section contain its own agent section
+  agent any
 
-node {
-  ansiColor('xterm') {
+  environment {
+    GIT_CREDENTIALS = "ssh-key-jenkins-bot"
+  }
 
-    stage('Checkout') {
-      git url: 'git@github.com:controlplaneio/netassert',
-        changelog: false,
-        branch: 'master',
-        credentialsId: "${GIT_CREDENTIALS}"
+  stages {
+    stage('Test') {
+//      agent { dockerfile true }
+      environment {
+        PERSIST_CLUSTER = 1
+        HOME="/tmp/home/"
+        TEST_FILE="test/test-localhost-remote.yaml"
       }
-
-    stage('Build') {
-      sh "command -v make &>/dev/null || yum install -yt make"
-      sh "make jenkins"
+      steps {
+        ansiColor('xterm') {
+          sh "command -v make &>/dev/null || yum install -yt make || apt install -y make"
+          sh "make jenkins TEST_FILE=${TEST_FILE}"
+        }
+      }
     }
-
   }
 }
